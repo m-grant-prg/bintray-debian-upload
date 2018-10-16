@@ -1,0 +1,35 @@
+NAME
+bintray.conf - Bintray connectivity information.
+DESCRIPTION
+This file contains information required to have tasks performed through the
+Bintray API.
+FILES
+bintray.conf
+
+This file contains a number of key / value pairs. The meaning of the keys is as
+follows:-
+
+binusr - The username registered on Bintray
+
+binapikey - The API key for the above user on Bintray
+
+binrepourl - The URL to the Bintray repository to use
+
+The file is stored as a hidden file in the users home directory.
+AUTHOR
+Written by Mark Grant.
+REPORTING BUGS
+Report bugs to <m.grant.prg@gmail.com>
+COPYRIGHT
+Copyright 2018 Mark Grant.
+.br
+License GPLv3+: GNU GPL version 3 or later
+.br
+<http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+.br
+There is NO WARRANTY, to the extent permitted by law.
+SEE ALSO
+bin-deb-upl.sh(1) bintray-debian-upload.conf(5)
+

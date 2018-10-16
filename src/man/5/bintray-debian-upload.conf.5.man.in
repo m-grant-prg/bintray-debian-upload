@@ -1,0 +1,31 @@
+NAME
+bintray-debian-upload.conf - Debian distributions
+DESCRIPTION
+This file contains a lookup between Debian distribution version numbers and
+their code names.
+For example:-
+
+9=stretch
+FILES
+bintray-debian-upload.conf
+
+The file is stored in an etc directory. The exact location depends on the method
+of installation but for Autotools installations on Linux this is likely to
+be /usr/local/etc/bintray-debian-upload.conf
+AUTHOR
+Written by Mark Grant.
+REPORTING BUGS
+Report bugs to <m.grant.prg@gmail.com>
+COPYRIGHT
+Copyright 2018 Mark Grant.
+.br
+License GPLv3+: GNU GPL version 3 or later
+.br
+<http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+.br
+There is NO WARRANTY, to the extent permitted by law.
+SEE ALSO
+bin-deb-upl.sh(1) bintray.conf(5)
+

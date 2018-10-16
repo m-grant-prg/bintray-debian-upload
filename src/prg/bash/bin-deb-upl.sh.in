@@ -1,0 +1,341 @@
+#! /usr/bin/env bash
+#########################################################################
+#									#
+#	bin-deb-upl.sh is automatically generated,			#
+#		please do not modify!					#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Script ID: bin-deb-upl.sh						#
+# Author: Copyright (C) 2018  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0					#
+#									#
+# Purpose:								#
+# To upload debian packages to bintray.					#
+#									#
+# Syntax:	bin-deb-upl.sh [ -h --help || -v --verbose ||		#
+#				-V --version ]				#
+#									#
+# Exit Codes:	0 - success						#
+#		1 - failure						#
+#									#
+# Further Info:								#
+# This script looks for debian packages in the current directory,	#
+# parses their names for package name, version and architecture, and	#
+# then uploads the package to Bintray.					#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Changelog								#
+#									#
+# Date		Author	Version	Description				#
+#									#
+# 15/10/2018	MG	1.0.1	First release.				#
+#									#
+#########################################################################
+
+##################
+# Init variables #
+##################
+script_exit_code=0
+outputprefix="bin-deb-upl.sh: "
+version="1.0.1"				# set version variable
+etclocation=@sysconfdir@		# Path to etc directory
+packageversion=@pkgversion@		# Version of the complete package
+verbose=FALSE
+
+#############
+# Functions #
+#############
+
+# Output $1 to stdout or stderr depending on $2.
+# Syntax = output $1 (The message) $2 (0 = stdout, > 0 = stderr)
+output()
+{
+	if [ $2 = 0 ]; then
+		echo "$outputprefix$1"
+	else
+		echo "$outputprefix$1" 1>&2
+	fi
+}
+
+# Standard function to test command error ($1 is $?) and exit if non-zero
+std_cmd_err_handler()
+{
+	if [ $1 != 0 ]; then
+		script_exit_code=$1
+		script_exit
+	fi
+}
+
+# Standard function to tidy up and return exit code
+script_exit()
+{
+	exit $script_exit_code
+}
+
+# Standard trap exit function
+trap_exit()
+{
+	script_exit_code=1
+	output "Script terminating due to trap received." $script_exit_code
+	script_exit
+}
+
+# Setup trap
+trap trap_exit SIGHUP SIGINT SIGTERM
+
+
+# Create ~/.bintray.conf
+create_bintray_conf()
+{
+	echo "Creating ~/.bintray.conf, please enter the requested information"
+	read -p "Bintray user name: " binusr
+	read -p "Bintray API Key: " binapikey
+	read -p "Bintray repository URL: " binrepourl
+	echo "binusr=$binusr" >> ~/.bintray.conf
+	std_cmd_err_handler $?
+	echo "binapikey=$binapikey" >> ~/.bintray.conf
+	std_cmd_err_handler $?
+	echo "binrepourl=$binrepourl" >> ~/.bintray.conf
+	std_cmd_err_handler $?
+	# Ensure there is a new line
+	echo "" >> ~/.bintray.conf
+	std_cmd_err_handler $?
+	echo "~/.bintray.conf successfully created."
+}
+
+
+# Read ~/.bintray.conf
+# Returns 0 on success, 1 on failure.
+read_bintray_conf()
+{
+	local input=()
+	local oldIFS=$IFS
+	IFS="="
+
+	exec 3<~/.bintray.conf
+	while read -u3 -ra input
+	do
+		# Ignore comment lines and blank lines.
+		if [[ ${input[0]} = "#"* || ${input[0]} = "" ]]; then
+			continue
+		fi
+
+		case ${input[0]} in
+		binusr)
+			binusr=${input[1]}
+			;;
+		binapikey)
+			binapikey=${input[1]}
+			;;
+		binrepourl)
+			binrepourl=${input[1]}
+			;;
+		*)
+			output "Unrecognized field in ~/.bintray.conf" 1
+			return 1
+			;;
+		esac
+	done
+	exec 3<&-
+
+	IFS=$oldIFS
+	return 0
+}
+
+
+# Lookup ditribution name using distribution number.
+# Returns 0 on success, 1 on failure.
+retrieve_dist_name()
+{
+	local input=()
+	local oldIFS=$IFS
+	IFS="="
+	debdistname=""
+
+	exec 3<$etclocation/bintray-debian-upload.conf
+	while read -u3 -ra input
+	do
+		# Ignore comment lines and blank lines.
+		if [[ ${input[0]} = "#"* || ${input[0]} = "" ]]; then
+			continue
+		fi
+
+		if [[ ${input[0]} = $debdistnum ]]; then
+			debdistname=${input[1]}
+			break
+		fi
+	done
+	exec 3<&-
+
+	IFS=$oldIFS
+
+	if [[ $debdistname = "" ]]; then
+		output "Unrecognized Debian distribution number." 1
+		return 1
+	fi
+	return 0
+}
+
+# Parse the filename to get package name, version string, architecture and
+# debian distribution number.
+# Returns 0 on success, 1 on failure.
+parse_filename()
+{
+	local filevar=${1%".deb"}
+	local elements=$(echo $filevar | tr "_" " ")
+	local count=0
+	local err=0
+	local el
+	pkgname=""
+	pkgver=""
+	debdistnum=""
+	pkgarch=""
+
+	for el in $elements
+	do
+		case "$count" in
+		0)
+			pkgname=$el
+			;;
+		1)
+			pkgver=$el
+			debdistnum=${el##*b}
+			debdistnum=${debdistnum%u*}
+			;;
+		2)
+			pkgarch=$el
+			;;
+		*)
+			err=1
+			;;
+		esac
+		count=$((count + 1))
+	done
+	if [[ $pkgname == "" || $pkgver == "" || $debdistnum == "" \
+		|| $pkgarch == "" || $err == 1 ]]; then
+		return 1
+	fi
+	return 0
+}
+
+
+########
+# Main #
+########
+# Process command line arguments with GNU getopt.
+GETOPTTEMP=`getopt -o hvV --long help,verbose,version -n "$0" -- "$@"`
+std_cmd_err_handler $?
+
+eval set -- "$GETOPTTEMP"
+std_cmd_err_handler $?
+
+while true
+do
+	case "$1" in
+	-h|--help)
+		echo "Usage is $0 [options]"
+		echo "	-h or --help displays usage information"
+		echo "	OR"
+		echo "	-v or --verbose produce more output"
+		echo "	OR"
+		echo "	-V or --version displays version information"
+		shift
+		script_exit_code=0
+		script_exit
+		;;
+	-v|--verbose)
+		verbose=TRUE
+		shift
+		;;
+	-V|--version)
+		echo "$0 Script version "$version
+		echo "$0 Package version "$packageversion
+		shift
+		script_exit_code=0
+		script_exit
+		;;
+	--)	shift
+		break
+		;;
+	*)	script_exit_code=1
+		output "Internal error." 1
+		script_exit
+		;;
+	esac
+done
+
+# Script does not accept other arguments.
+if [ $# -gt 0 ]; then
+	script_exit_code=1
+	output "Invalid argument." 1
+	script_exit
+fi
+
+# Check bintray-debian-upload.conf
+if [ ! -f "$etclocation/bintray-debian-upload.conf" ]; then
+	output "$etclocation/bintray-debian-upload.conf does not exist." 1
+	script_exit_code=1
+	script_exit
+fi
+
+
+# Read or create ~/.bintray.conf
+if [ -f ~/.bintray.conf ]; then
+	read_bintray_conf
+	std_cmd_err_handler $?
+else
+	create_bintray_conf
+fi
+
+
+# Process debian packages
+pkgfilelist=$(ls *.deb)
+std_cmd_err_handler $?
+
+for pkgfilename in $pkgfilelist
+do
+	parse_filename $pkgfilename
+	std_cmd_err_handler $?
+
+	output "Attempting upload of $pkgfilename" 0
+
+	if [ $verbose = TRUE ]; then
+		echo "Package is $pkgname"
+		echo "Package version is $pkgver"
+		echo "Debian distribution number is $debdistnum"
+		echo "Arch is $pkgarch"
+	fi
+
+	retrieve_dist_name
+	std_cmd_err_handler $?
+
+	if [ $verbose = TRUE ]; then
+		echo "Debian ditribution name $debdistname" && echo
+	fi
+
+	# Build upload command line.
+	uploadCL="curl -T $pkgfilename -u$binusr:$binapikey \"$binrepourl"
+	uploadCL+="/$pkgname/$pkgver/pool/stable/${pkgname:0:1}/$pkgfilename;"
+	uploadCL+="deb_distribution=$debdistname;deb_component=stable;"
+	uploadCL+="deb_architecture=$pkgarch;publish=1\""
+
+	if [ $verbose = TRUE ]; then
+		echo $uploadCL && echo
+	fi
+
+	eval "$uploadCL"
+	std_cmd_err_handler $?
+done
+
+
+script_exit_code=0
+output "script completed." 0
+script_exit

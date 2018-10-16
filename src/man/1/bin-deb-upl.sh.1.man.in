@@ -1,0 +1,43 @@
+NAME
+bin-deb-upl.sh - Upload Debian packages to Bintray.
+SYNOPSIS
+bin-deb-upl.sh [OPTION]
+DESCRIPTION
+This script uploads all Debian packages in the current directory to Bintray. It
+parses the filename to extract the package name, version and distribution. It then formats this information into a curl command conforming to the Bintray API.
+
+It is not possible for the script to determine success or failure as the curl
+command may succeed whilst the Bintray API rejects the request. The message
+returned from Bintray must be visually checked.
+
+The script looks in ~/.bintray.conf for Bintray related information. If this
+file does not exist the information is requested and the file created.
+OPTIONS
+-h, --help  prints usage information
+
+-v, --verbose  output more information
+
+-V, --version  prints version information
+EXIT STATUS
+0
+if OK,
+
+1
+on failure.
+AUTHOR
+Written by Mark Grant.
+REPORTING BUGS
+Report bugs to <m.grant.prg@gmail.com>
+COPYRIGHT
+Copyright 2018 Mark Grant.
+.br
+License GPLv3+: GNU GPL version 3 or later
+.br
+<http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+.br
+There is NO WARRANTY, to the extent permitted by law.
+SEE ALSO
+bintray.conf(5) bintray-debian-upload.conf(5)
+

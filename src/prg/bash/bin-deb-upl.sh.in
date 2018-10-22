@@ -39,6 +39,8 @@
 # 15/10/2018	MG	1.0.1	First release.				#
 # 19/10/2018	MG	1.0.2	Add newline after wget bintray message	#
 #				display.				#
+# 22/10/2018	MG	1.0.3	Move above new line inside end of	#
+#				processing loop.			#
 #									#
 #########################################################################
 
@@ -47,7 +49,7 @@
 ##################
 script_exit_code=0
 outputprefix="bin-deb-upl.sh: "
-version="1.0.2"				# set version variable
+version="1.0.3"				# set version variable
 etclocation=@sysconfdir@		# Path to etc directory
 packageversion=@pkgversion@		# Version of the complete package
 verbose=FALSE
@@ -335,9 +337,9 @@ do
 
 	eval "$uploadCL"
 	std_cmd_err_handler $?
+	echo
 done
 
-echo
 
 script_exit_code=0
 output "script completed." 0

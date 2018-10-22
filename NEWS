@@ -1,3 +1,6 @@
+Release 1.0.3 2018-10-22
+Move final newline inside the end of the processing loop. Better display.
+
 Release 1.0.2 2018-10-19
 Add newline after wget bintray return message.
 

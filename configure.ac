@@ -37,7 +37,7 @@ AC_PREREQ([2.69])
 #
 ########################
 
-AC_INIT([Bintray Debian Upload Project], [v1.0.3],
+AC_INIT([Bintray Debian Upload Project], [v1.0.4],
 	[m.grant.prg@gmail.com], [bintray-debian-upload])
 
 AC_SUBST(pkgversion, $PACKAGE_VERSION)

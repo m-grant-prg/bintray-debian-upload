@@ -1,3 +1,7 @@
+2018-10-31 v 1.0.4 Mark Grant <m.grant.prg@gmail.com>
+	*  srctarball to use -src- in filename
+	bin-deb-upl.sh script still at v1.0.3
+
 2018-10-22 v 1.0.3 Mark Grant <m.grant.prg@gmail.com>
 	*  Move final newline inside the end of the processing loop. Better
 	display.

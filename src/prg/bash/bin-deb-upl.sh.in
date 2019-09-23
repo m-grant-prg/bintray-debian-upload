@@ -17,8 +17,9 @@
 # Purpose:								#
 # To upload debian packages to bintray.					#
 #									#
-# Syntax:	bin-deb-upl.sh [ -h --help || -v --verbose ||		#
-#				-V --version ]				#
+# Syntax:	bin-deb-upl.sh	[ -h || --help ] ||			#
+#				[ -v || --verbose ] ||			#
+#				[ -V || --version ]			#
 #									#
 # Exit Codes:	0 - success						#
 #		1 - failure						#

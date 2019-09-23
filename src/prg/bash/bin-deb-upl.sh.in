@@ -127,6 +127,8 @@ trap_exit()
 trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
 
 # Create ~/.bintray.conf
+# No parameters.
+# No return value.
 create_bintray_conf()
 {
 	echo "Creating ~/.bintray.conf, please enter the requested information"
@@ -147,6 +149,7 @@ create_bintray_conf()
 
 
 # Read ~/.bintray.conf
+# No parameters.
 # Returns 0 on success, 1 on failure.
 read_bintray_conf()
 {
@@ -185,6 +188,7 @@ read_bintray_conf()
 
 
 # Lookup ditribution name using distribution number.
+# No parameters.
 # Returns 0 on success, 1 on failure.
 retrieve_dist_name()
 {
@@ -218,6 +222,7 @@ retrieve_dist_name()
 
 # Parse the filename to get package name, version string, architecture and
 # debian distribution number.
+# Parameters -	$1 is the Debian package filename.
 # Returns 0 on success, 1 on failure.
 parse_filename()
 {

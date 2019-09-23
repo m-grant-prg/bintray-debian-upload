@@ -53,7 +53,6 @@
 ##################
 # Init variables #
 ##################
-script_exit_code=0
 readonly outputprefix="$(basename $0): "
 version=1.1.0				# Script version
 etclocation=@sysconfdir@		# Path to etc directory
@@ -90,27 +89,27 @@ output()
 	fi
 }
 
+# Standard function to tidy up and return exit code.
+# Parameters - 	$1 is the exit code.
+# No return value.
+script_exit()
+{
+	exit $1
+}
+
 # Standard function to test command error ($1 is $?) and exit if non-zero
 std_cmd_err_handler()
 {
 	if [ $1 != 0 ]; then
-		script_exit_code=$1
-		script_exit
+		script_exit $1
 	fi
-}
-
-# Standard function to tidy up and return exit code
-script_exit()
-{
-	exit $script_exit_code
 }
 
 # Standard trap exit function
 trap_exit()
 {
-	script_exit_code=1
-	output "Script terminating due to trap received." $script_exit_code
-	script_exit
+	output "Script terminating due to trap received." 1
+	script_exit 1
 }
 
 # Setup trap
@@ -264,8 +263,7 @@ while true; do
 	-h|--help)
 		usage
 		shift
-		script_exit_code=0
-		script_exit
+		script_exit 0
 		;;
 	-v|--verbose)
 		verbose=true
@@ -275,31 +273,27 @@ while true; do
 		echo "$0 Script version "$version
 		echo "$0 Package version "$packageversion
 		shift
-		script_exit_code=0
-		script_exit
+		script_exit 0
 		;;
 	--)	shift
 		break
 		;;
-	*)	script_exit_code=1
-		output "Internal error." 1
-		script_exit
+	*)	output "Internal error." 1
+		script_exit 1
 		;;
 	esac
 done
 
 # Script does not accept other arguments.
 if [ $# -gt 0 ]; then
-	script_exit_code=1
 	output "Invalid argument." 1
-	script_exit
+	script_exit 1
 fi
 
 # Check bintray-debian-upload.conf
 if [ ! -f "$etclocation/bintray-debian-upload.conf" ]; then
 	output "$etclocation/bintray-debian-upload.conf does not exist." 1
-	script_exit_code=1
-	script_exit
+	script_exit 1
 fi
 
 
@@ -352,7 +346,6 @@ for pkgfilename in $pkgfilelist; do
 done
 
 
-script_exit_code=0
 output "script completed." 0
-script_exit
+script_exit 0
 

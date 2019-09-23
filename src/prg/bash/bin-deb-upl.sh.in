@@ -44,6 +44,7 @@
 # 23/09/2019	MG	1.1.0	Do not hardcode outputprefix.		#
 #				Use C shape for if, while, for etc	#
 #				statements.				#
+#				Use true booleans.			#
 #									#
 #########################################################################
 
@@ -56,7 +57,7 @@ readonly outputprefix="$(basename $0): "
 version=1.1.0				# Script version
 etclocation=@sysconfdir@		# Path to etc directory
 packageversion=@pkgversion@		# Package version
-verbose=FALSE
+verbose=false
 
 #############
 # Functions #
@@ -256,7 +257,7 @@ while true; do
 		script_exit
 		;;
 	-v|--verbose)
-		verbose=TRUE
+		verbose=true
 		shift
 		;;
 	-V|--version)
@@ -310,7 +311,7 @@ for pkgfilename in $pkgfilelist; do
 
 	output "Attempting upload of $pkgfilename" 0
 
-	if [ $verbose = TRUE ]; then
+	if $verbose; then
 		echo "Package is $pkgname"
 		echo "Package version is $pkgver"
 		echo "Debian distribution number is $debdistnum"
@@ -320,7 +321,7 @@ for pkgfilename in $pkgfilelist; do
 	retrieve_dist_name
 	std_cmd_err_handler $?
 
-	if [ $verbose = TRUE ]; then
+	if $verbose; then
 		echo "Debian ditribution name $debdistname" && echo
 	fi
 
@@ -330,7 +331,7 @@ for pkgfilename in $pkgfilelist; do
 	uploadCL+="deb_distribution=$debdistname;deb_component=stable;"
 	uploadCL+="deb_architecture=$pkgarch;publish=1\""
 
-	if [ $verbose = TRUE ]; then
+	if $verbose; then
 		echo $uploadCL && echo
 	fi
 

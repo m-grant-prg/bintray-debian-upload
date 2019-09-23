@@ -21,8 +21,29 @@
 #				[ -v || --verbose ] ||			#
 #				[ -V || --version ]			#
 #									#
-# Exit Codes:	0 - success						#
-#		1 - failure						#
+# Exit codes used:-							#
+# Bash standard Exit Codes:	0 - success				#
+#				1 - general failure			#
+# User-defined exit code range is 64 - 113				#
+#	C/C++ Semi-standard exit codes from sysexits.h range is 64 - 78	#
+#		EX_USAGE	64	command line usage error	#
+#		EX_DATAERR	65	data format error		#
+#		EX_NOINPUT	66	cannot open input		#
+#		EX_NOUSER	67	addressee unknown		#
+#		EX_NOHOST	68	host name unknown		#
+#		EX_UNAVAILABLE	69	service unavailable		#
+#		EX_SOFTWARE	70	internal software error		#
+#		EX_OSERR	71	system error (e.g., can't fork)	#
+#		EX_OSFILE	72	critical OS file missing	#
+#		EX_CANTCREAT	73	can't create (user) output file	#
+#		EX_IOERR	74	input/output error		#
+#		EX_TEMPFAIL	75	temp failure; user is invited	#
+#					to retry			#
+#		EX_PROTOCOL	76	remote error in protocol	#
+#		EX_NOPERM	77	permission denied		#
+#		EX_CONFIG	78	configuration error		#
+#	User-defined (here) exit codes range 79 - 113:			#
+#		None							#
 #									#
 # Further Info:								#
 # This script looks for debian packages in the current directory,	#
@@ -49,6 +70,7 @@
 #				Refactor into functions.		#
 #				Use printf AOT echo.			#
 #				Tidy variable scope and type.		#
+#				Use more meaningful exit codes.		#
 #									#
 #########################################################################
 
@@ -153,7 +175,7 @@ create_bintray_conf()
 
 # Read ~/.bintray.conf
 # No parameters.
-# Returns 0 on success, 1 on failure.
+# Returns 0 on success, EX_DATAERR 65 on failure.
 read_bintray_conf()
 {
 	local input=()
@@ -179,7 +201,7 @@ read_bintray_conf()
 			;;
 		*)
 			output "Unrecognized field in ~/.bintray.conf" 1
-			return 1
+			return 65
 			;;
 		esac
 	done
@@ -192,7 +214,7 @@ read_bintray_conf()
 
 # Lookup ditribution name using distribution number.
 # No parameters.
-# Returns 0 on success, 1 on failure.
+# Returns 0 on success, EX_DATAERR 65 on failure.
 retrieve_dist_name()
 {
 	local input=()
@@ -218,7 +240,7 @@ retrieve_dist_name()
 
 	if [[ -z $debdistname ]]; then
 		output "Unrecognized Debian distribution number." 1
-		return 1
+		return 65
 	fi
 	return 0
 }
@@ -226,7 +248,7 @@ retrieve_dist_name()
 # Parse the filename to get package name, version string, architecture and
 # debian distribution number.
 # Parameters -	$1 is the Debian package filename.
-# Returns 0 on success, 1 on failure.
+# Returns 0 on success, EX_DATAERR 65 on failure.
 parse_filename()
 {
 	local filevar=${1%".deb"}
@@ -261,7 +283,7 @@ parse_filename()
 	if [[ $pkgname == "" || $pkgver == "" || $debdistnum == "" \
 		|| $pkgarch == "" || $err == 1 ]]; then
 		output "Invalid Debian package filename $1" 1
-		return 1
+		return 65
 	fi
 	return 0
 }
@@ -302,7 +324,7 @@ proc_CL()
 			break
 			;;
 		*)	output "Internal error." 1
-			script_exit 1
+			script_exit 64
 			;;
 		esac
 	done
@@ -310,7 +332,7 @@ proc_CL()
 	# Script does not accept other arguments.
 	if [ $# -gt 0 ]; then
 		output "Invalid argument." 1
-		script_exit 1
+		script_exit 64
 	fi
 }
 
@@ -325,7 +347,7 @@ proc_config()
 	if [[ ! -f "$etclocation/bintray-debian-upload.conf" ]]; then
 		msg="$etclocation/bintray-debian-upload.conf does not exist."
 		output "$msg" 1
-		script_exit 1
+		script_exit 66
 	fi
 
 	# Read or create ~/.bintray.conf

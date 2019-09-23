@@ -45,6 +45,7 @@
 #				Use C shape for if, while, for etc	#
 #				statements.				#
 #				Use true booleans.			#
+#				Refactor into functions.		#
 #									#
 #########################################################################
 
@@ -59,9 +60,24 @@ etclocation=@sysconfdir@		# Path to etc directory
 packageversion=@pkgversion@		# Package version
 verbose=false
 
+
 #############
 # Functions #
 #############
+
+# -h --help output.
+# No parameters
+# No return value
+usage ()
+{
+cat << EOF
+Usage is $0 [OPTIONS]
+	[OPTIONS] are:-
+	-h or --help Displays usage information
+	-v or --verbose verbose output
+	-V or --version Displays version information
+EOF
+}
 
 # Output $1 to stdout or stderr depending on $2.
 # Syntax = output $1 (The message) $2 (0 = stdout, > 0 = stderr)
@@ -246,12 +262,7 @@ std_cmd_err_handler $?
 while true; do
 	case "$1" in
 	-h|--help)
-		echo "Usage is $0 [options]"
-		echo "	-h or --help displays usage information"
-		echo "	OR"
-		echo "	-v or --verbose produce more output"
-		echo "	OR"
-		echo "	-V or --version displays version information"
+		usage
 		shift
 		script_exit_code=0
 		script_exit

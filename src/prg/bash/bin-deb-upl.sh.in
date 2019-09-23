@@ -42,6 +42,8 @@
 # 22/10/2018	MG	1.0.3	Move above new line inside end of	#
 #				processing loop.			#
 # 23/09/2019	MG	1.1.0	Do not hardcode outputprefix.		#
+#				Use C shape for if, while, for etc	#
+#				statements.				#
 #									#
 #########################################################################
 
@@ -127,8 +129,7 @@ read_bintray_conf()
 	IFS="="
 
 	exec 3<~/.bintray.conf
-	while read -u3 -ra input
-	do
+	while read -u3 -ra input; do
 		# Ignore comment lines and blank lines.
 		if [[ ${input[0]} = "#"* || ${input[0]} = "" ]]; then
 			continue
@@ -167,8 +168,7 @@ retrieve_dist_name()
 	debdistname=""
 
 	exec 3<$etclocation/bintray-debian-upload.conf
-	while read -u3 -ra input
-	do
+	while read -u3 -ra input; do
 		# Ignore comment lines and blank lines.
 		if [[ ${input[0]} = "#"* || ${input[0]} = "" ]]; then
 			continue
@@ -205,8 +205,7 @@ parse_filename()
 	debdistnum=""
 	pkgarch=""
 
-	for el in $elements
-	do
+	for el in $elements; do
 		case "$count" in
 		0)
 			pkgname=$el
@@ -243,8 +242,7 @@ std_cmd_err_handler $?
 eval set -- "$GETOPTTEMP"
 std_cmd_err_handler $?
 
-while true
-do
+while true; do
 	case "$1" in
 	-h|--help)
 		echo "Usage is $0 [options]"
@@ -306,8 +304,7 @@ fi
 pkgfilelist=$(ls *.deb)
 std_cmd_err_handler $?
 
-for pkgfilename in $pkgfilelist
-do
+for pkgfilename in $pkgfilelist; do
 	parse_filename $pkgfilename
 	std_cmd_err_handler $?
 

@@ -46,6 +46,7 @@
 #				statements.				#
 #				Use true booleans.			#
 #				Refactor into functions.		#
+#				Use printf AOT echo.			#
 #									#
 #########################################################################
 
@@ -131,20 +132,20 @@ trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
 # No return value.
 create_bintray_conf()
 {
-	echo "Creating ~/.bintray.conf, please enter the requested information"
+	printf "Creating ~/.bintray.conf, please enter the requested info\n"
 	read -p "Bintray user name: " binusr
 	read -p "Bintray API Key: " binapikey
 	read -p "Bintray repository URL: " binrepourl
-	echo "binusr=$binusr" >> ~/.bintray.conf
+	printf "binusr=%s\n" $binusr >> ~/.bintray.conf
 	std_cmd_err_handler $?
-	echo "binapikey=$binapikey" >> ~/.bintray.conf
+	printf "binapikey=%s\n" $binapikey >> ~/.bintray.conf
 	std_cmd_err_handler $?
-	echo "binrepourl=$binrepourl" >> ~/.bintray.conf
+	printf "binrepourl=%s\n" $binrepourl >> ~/.bintray.conf
 	std_cmd_err_handler $?
 	# Ensure there is a new line
-	echo "" >> ~/.bintray.conf
+	printf "\n" >> ~/.bintray.conf
 	std_cmd_err_handler $?
-	echo "~/.bintray.conf successfully created."
+	printf "~/.bintray.conf successfully created."
 }
 
 
@@ -227,7 +228,7 @@ retrieve_dist_name()
 parse_filename()
 {
 	local filevar=${1%".deb"}
-	local elements=$(echo $filevar | tr "_" " ")
+	local elements=$(printf "%s\n" $filevar | tr "_" " ")
 	local count=0
 	local err=0
 	local el
@@ -353,17 +354,17 @@ for pkgfilename in $pkgfilelist; do
 	output "Attempting upload of $pkgfilename" 0
 
 	if $verbose; then
-		echo "Package is $pkgname"
-		echo "Package version is $pkgver"
-		echo "Debian distribution number is $debdistnum"
-		echo "Arch is $pkgarch"
+		printf "Package is %s\n" $pkgname
+		printf "Package version is %s\n" $pkgver
+		printf "Debian distribution number is %s\n" $debdistnum
+		printf "Arch is %s\n" $pkgarch
 	fi
 
 	retrieve_dist_name
 	std_cmd_err_handler $?
 
 	if $verbose; then
-		echo "Debian ditribution name $debdistname" && echo
+		printf "Debian ditribution name %s\n\n" $debdistname
 	fi
 
 	# Build upload command line.
@@ -373,12 +374,12 @@ for pkgfilename in $pkgfilelist; do
 	uploadCL+="deb_architecture=$pkgarch;publish=1\""
 
 	if $verbose; then
-		echo $uploadCL && echo
+		printf "%s\n\n" $uploadCL
 	fi
 
 	eval "$uploadCL"
 	std_cmd_err_handler $?
-	echo
+	printf "\n"
 done
 
 

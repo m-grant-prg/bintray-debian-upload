@@ -2,7 +2,7 @@
 #########################################################################
 #									#
 # Script ID: ./Makefile.am						#
-# Author: Copyright (C) 2018  Mark Grant				#
+# Author: Copyright (C) 2018-2019  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -23,6 +23,9 @@
 # 31/10/2018	MG	1.0.2	Change srctarball target to build with	#
 #				src between package name and version in	#
 #				filename.				#
+# 23/09/2019	MG	1.0.3	Change source tarball name to be the	#
+#				same as that in GitHub releases. This	#
+#				aids integrating with rpm generation.	#
 #									#
 #########################################################################
 
@@ -37,7 +40,7 @@ SUBDIRS += src/conf/etc
 
 srctarball:
 	@cwd="$${PWD}" && \
-	targ="$${cwd}/@PACKAGE_TARNAME@-src-@PACKAGE_VERSION@.tar.gz" && \
+	targ="$${cwd}/@PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz" && \
 	cd @srcdir@ && \
 	echo "making srctarball from @srcdir@" && \
 	echo "GA	$${targ}" && \

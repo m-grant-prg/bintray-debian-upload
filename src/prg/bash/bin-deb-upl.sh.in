@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: bin-deb-upl.sh						#
-# Author: Copyright (C) 2018  Mark Grant				#
+# Author: Copyright (C) 2018-2019  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -41,17 +41,19 @@
 #				display.				#
 # 22/10/2018	MG	1.0.3	Move above new line inside end of	#
 #				processing loop.			#
+# 23/09/2019	MG	1.1.0	Do not hardcode outputprefix.		#
 #									#
 #########################################################################
+
 
 ##################
 # Init variables #
 ##################
 script_exit_code=0
-outputprefix="bin-deb-upl.sh: "
-version="1.0.3"				# set version variable
+readonly outputprefix="$(basename $0): "
+version=1.1.0				# Script version
 etclocation=@sysconfdir@		# Path to etc directory
-packageversion=@pkgversion@		# Version of the complete package
+packageversion=@pkgversion@		# Package version
 verbose=FALSE
 
 #############

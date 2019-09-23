@@ -259,6 +259,7 @@ parse_filename()
 	done
 	if [[ $pkgname == "" || $pkgver == "" || $debdistnum == "" \
 		|| $pkgarch == "" || $err == 1 ]]; then
+		output "Invalid Debian package filename $1" 1
 		return 1
 	fi
 	return 0

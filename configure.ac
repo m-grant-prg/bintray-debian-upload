@@ -40,6 +40,7 @@
 #									#
 # 15/10/2018	MG	1.0.1	Initial release.			#
 # 23/09/2019	MG	1.1.0	Revamp to latest standard format.	#
+#				Remove leading v from version string.	#
 #									#
 #########################################################################
 
@@ -59,7 +60,7 @@ AC_PREREQ([2.69])
 # can be used by ac output and / or the sed setup below to substitute bookmarks
 # in source files.
 #
-AC_INIT([Bintray Debian Upload Project], [v1.0.4],
+AC_INIT([Bintray Debian Upload Project], [1.0.4],
 	[m.grant.prg@gmail.com], [bintray-debian-upload])
 
 AC_MSG_NOTICE(initialisation and setup)

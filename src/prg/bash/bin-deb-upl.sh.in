@@ -47,6 +47,7 @@
 #				Use true booleans.			#
 #				Refactor into functions.		#
 #				Use printf AOT echo.			#
+#				Tidy variable scope and type.		#
 #									#
 #########################################################################
 
@@ -55,9 +56,9 @@
 # Init variables #
 ##################
 readonly outputprefix="$(basename $0): "
-version=1.1.0				# Script version
-etclocation=@sysconfdir@		# Path to etc directory
-packageversion=@pkgversion@		# Package version
+readonly version=1.1.0				# Script version
+readonly etclocation=@sysconfdir@		# Path to etc directory
+readonly packageversion=@pkgversion@		# Package version
 verbose=false
 
 
@@ -214,7 +215,7 @@ retrieve_dist_name()
 
 	IFS=$oldIFS
 
-	if [[ $debdistname = "" ]]; then
+	if [[ -z $debdistname ]]; then
 		output "Unrecognized Debian distribution number." 1
 		return 1
 	fi
@@ -229,8 +230,8 @@ parse_filename()
 {
 	local filevar=${1%".deb"}
 	local elements=$(printf "%s\n" $filevar | tr "_" " ")
-	local count=0
-	local err=0
+	local -i count=0
+	local -i err=0
 	local el
 	pkgname=""
 	pkgver=""
@@ -238,7 +239,7 @@ parse_filename()
 	pkgarch=""
 
 	for el in $elements; do
-		case "$count" in
+		case $count in
 		0)
 			pkgname=$el
 			;;
@@ -254,7 +255,7 @@ parse_filename()
 			err=1
 			;;
 		esac
-		count=$((count + 1))
+		((count++))
 	done
 	if [[ $pkgname == "" || $pkgver == "" || $debdistnum == "" \
 		|| $pkgarch == "" || $err == 1 ]]; then

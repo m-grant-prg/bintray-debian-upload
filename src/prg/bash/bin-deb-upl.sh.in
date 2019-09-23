@@ -310,6 +310,29 @@ proc_CL()
 	fi
 }
 
+# Process / check config files.
+# No parameters
+# No return value.
+proc_config()
+{
+	local msg
+
+	# Check bintray-debian-upload.conf
+	if [[ ! -f "$etclocation/bintray-debian-upload.conf" ]]; then
+		msg="$etclocation/bintray-debian-upload.conf does not exist."
+		output "$msg" 1
+		script_exit 1
+	fi
+
+	# Read or create ~/.bintray.conf
+	if [[ -f ~/.bintray.conf ]]; then
+		read_bintray_conf
+		std_cmd_err_handler $?
+	else
+		create_bintray_conf
+	fi
+}
+
 
 ########
 # Main #
@@ -317,21 +340,7 @@ proc_CL()
 
 proc_CL "$@"
 
-# Check bintray-debian-upload.conf
-if [ ! -f "$etclocation/bintray-debian-upload.conf" ]; then
-	output "$etclocation/bintray-debian-upload.conf does not exist." 1
-	script_exit 1
-fi
-
-
-# Read or create ~/.bintray.conf
-if [ -f ~/.bintray.conf ]; then
-	read_bintray_conf
-	std_cmd_err_handler $?
-else
-	create_bintray_conf
-fi
-
+proc_config
 
 # Process debian packages
 pkgfilelist=$(ls *.deb)

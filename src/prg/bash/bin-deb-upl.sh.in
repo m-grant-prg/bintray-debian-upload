@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#! @bashlocation@
 #########################################################################
 #									#
 #	bin-deb-upl.sh is automatically generated,			#
@@ -71,6 +71,8 @@
 #				Use printf AOT echo.			#
 #				Tidy variable scope and type.		#
 #				Use more meaningful exit codes.		#
+#				Use bash location from configure in	#
+#				shebang.				#
 #									#
 #########################################################################
 

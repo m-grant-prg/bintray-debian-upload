@@ -1,3 +1,36 @@
+2019-10-14 v1.1.0 Mark Grant <m.grant.prg@gmail.com>
+	*  README: Update bootstrap.sh section
+	man: Update Copyright statements
+	README: Add Copyright statement
+	README: Make package install references generic
+	travis: Initial setup
+	at: Update bootstrap.sh to v1.4.5
+	git: Update project root gitignore to v1.0.2
+	at: Set configure args for distcheck in top makefile
+	at: Remove useless shebangs from Makefile.ams
+	at: Install GNU standard files eg AUTHORS
+	at: Make source tarball name == GitHub
+	at: Remove leading v from version string
+	bash: Use bash location from configure in shebang
+	at: configure.ac: Revamp to latest standard format
+	bash: man: Use more meaningful exit codes
+	bash: Improve file header syntax comments
+	bash: Emit error message on invalid package name
+	bash: Tidy variable scope and types
+	bash: Use printf AOT echo
+	bash: Refactor config file processing into function
+	bash: Refactor CL processing into a function
+	bash: Standardise function header comments
+	bash: Standardise trap handling
+	bash: Standardise std_cmd_err_handler()
+	bash: Standardise output()
+	bash: standardise script_exit()
+	bash: Refactor help into a function
+	bash: Use true booleans
+	bash: Use C shape for loops and ifs
+	bash: Do not hardcode outputprefix
+	bin-deb-upl.sh script now at v1.1.0
+
 2018-10-31 v 1.0.4 Mark Grant <m.grant.prg@gmail.com>
 	*  srctarball to use -src- in filename
 	bin-deb-upl.sh script still at v1.0.3

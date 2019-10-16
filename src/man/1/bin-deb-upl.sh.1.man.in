@@ -13,7 +13,11 @@ returned from Bintray must be visually checked.
 The script looks in ~/.bintray.conf for Bintray related information. If this
 file does not exist the information is requested and the file created.
 OPTIONS
+-d, --debian  upload to the debian-utils repository
+
 -h, --help  prints usage information
+
+-r, --raspbian  upload to the raspbian-utils repository
 
 -v, --verbose  output more information
 

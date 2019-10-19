@@ -17,7 +17,9 @@
 # Purpose:								#
 # To upload debian packages to bintray.					#
 #									#
-# Syntax:	bin-deb-upl.sh	[ -h || --help ] ||			#
+# Syntax:	bin-deb-upl.sh	[ -d || --debian ] ||			#
+#				[ -h || --help ] ||			#
+#				[ -r || --raspbian ] ||			#
 #				[ -v || --verbose ] ||			#
 #				[ -V || --version ]			#
 #									#
@@ -82,7 +84,7 @@
 # Init variables #
 ##################
 readonly outputprefix="$(basename $0): "
-readonly version=1.1.0				# Script version
+readonly version=1.1.1				# Script version
 readonly etclocation=@sysconfdir@		# Path to etc directory
 readonly packageversion=@pkgversion@		# Package version
 verbose=false

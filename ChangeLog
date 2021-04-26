@@ -1,3 +1,15 @@
+2021-04-26 v1.1.2 Mark Grant <m.grant.prg@gmail.com>
+	* at: Upgrade bootstrap.sh to v1.4.8
+	travis: Stop using Travis
+	actions: Initial build action setup
+	at: lxcu: Add lxc test build setup
+	travis: Bionic is the new minimum release
+	at: README: Update Copyright date for 2020
+	at: README: Correct git command
+	at: Update bootstrap.sh to v1.4.7
+	conf: Add version 12 bookworm entry
+	bin-deb-upl.sh script still at v1.1.1
+
 2019-10-19 v1.1.1 Mark Grant <m.grant.prg@gmail.com>
 	*  bash: Add debian and raspbian repo CL options
 	bin-deb-upl.sh script now at v1.1.1
